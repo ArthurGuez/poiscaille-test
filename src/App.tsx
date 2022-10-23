@@ -1,30 +1,31 @@
-const Link = (props: JSX.IntrinsicElements['a']) => (
-  <a
-    className="text-pink-500 underline hover:no-underline dark:text-pink-400"
-    {...props}
-  />
-);
+import { getBalancedOrders } from './utils';
+import { ORDERS } from './constants';
+
+const balancedOrders = getBalancedOrders(ORDERS);
 
 export default function App() {
+  if (balancedOrders === null) {
+    return <div>Failed to balance orders</div>;
+  }
+
   return (
-    <div className="mx-auto my-8 mt-10 w-8/12 rounded border border-gray-200 p-4 shadow-md dark:border-neutral-600 dark:bg-neutral-800 dark:shadow-none">
-      <h1 className="mb-4 text-4xl">Welcome</h1>
-      <p className="my-4">
-        <em>Minimal, fast, sensible defaults.</em>
-      </p>
-      <p className="my-4">
-        Using <Link href="https://vitejs.dev/">Vite</Link>,{' '}
-        <Link href="https://reactjs.org/">React</Link>,{' '}
-        <Link href="https://www.typescriptlang.org/">TypeScript</Link> and{' '}
-        <Link href="https://tailwindcss.com/">Tailwind</Link>.
-      </p>
-      <p className="my-4">
-        Change{' '}
-        <code className="border-1 2py-1 rounded border border-pink-500 bg-neutral-100 px-1 font-mono text-pink-500 dark:border-pink-400 dark:bg-neutral-700 dark:text-pink-400">
-          src/App.tsx
-        </code>{' '}
-        for live updates.
-      </p>
+    <div>
+      <h1 className="mt-3 flex justify-center">Results</h1>
+      <div className="mx-auto my-8 mt-10 w-8/12 rounded border border-gray-200 p-4 shadow-md dark:border-neutral-600 dark:bg-neutral-800 dark:shadow-none">
+        {balancedOrders.map(({ date, lockers, places }) => (
+          <div className="mb-3" key={date}>
+            <div>Date: {date}</div>
+            <div>New number of lockers: {lockers}</div>
+            <div>
+              {Object.entries(places).map(([placeKey, placeValue]) => (
+                <div key={placeKey}>
+                  New quantity for place {placeKey}: {placeValue}
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
